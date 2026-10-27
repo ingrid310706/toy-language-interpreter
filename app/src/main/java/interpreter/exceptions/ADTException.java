@@ -7,5 +7,6 @@ public class ADTException extends MyException{
     //used for invalid operations
     // like empty stack
     //non existent key
+    //out of bounds
 
 }
