@@ -1,17 +1,17 @@
+
 package interpreter.model.adt;
 
 import interpreter.exceptions.ADTException;
 import java.util.HashMap;
 import java.util.Map;
 
+public class MyDictionary<K, V> implements IDictionary<K, V> {
 
-
-public class MyDictionary<K,V> implements  IDictionary<K,V> {
-    private final Map<K,V> dictionary = new HashMap<>();
+    private final Map<K, V> dictionary = new HashMap<>();
 
     @Override
-    public boolean isDefined(K Key){
-        return dictionary.containsKey(Key);
+    public boolean isDefined(K key) {
+        return dictionary.containsKey(key);
     }
 
     @Override
@@ -39,5 +39,4 @@ public class MyDictionary<K,V> implements  IDictionary<K,V> {
     public String toString() {
         return dictionary.toString();
     }
-
 }
