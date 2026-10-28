@@ -1,7 +1,4 @@
-package interpreter.model.exp;
 
-public class ArithOpTest {
-}
 
 package interpreter.model.exp;
 
