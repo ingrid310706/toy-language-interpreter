@@ -1,5 +1,5 @@
 package interpreter.model.adt;
-
+import java.util.List;
 import interpreter.exceptions.ADTException;
 
 public interface IList<T> {
@@ -8,4 +8,6 @@ public interface IList<T> {
             throws ADTException;
 
     int size();
+
+    List<T> toList();
 }
