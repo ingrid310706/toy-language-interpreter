@@ -20,12 +20,7 @@ class VarDeclStmtTest {
     private PrgState createState() {
         IStmt dummy = state -> state;
 
-        return new PrgState(
-                new MyStack<>(),
-                new MyDictionary<>(),
-                new MyList<>(),
-                dummy
-        );
+        return PrgState.of(dummy);
     }
 
     @Test

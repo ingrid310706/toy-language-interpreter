@@ -1,11 +1,7 @@
-
 package interpreter.model.stmt;
 
 import interpreter.exceptions.MyException;
 import interpreter.model.PrgState;
-import interpreter.model.adt.MyStack;
-import interpreter.model.adt.MyDictionary;
-import interpreter.model.adt.MyList;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,12 +29,7 @@ class CompStmtTest {
 
         IStmt compound = new CompStmt(first, second);
 
-        PrgState state = new PrgState(
-                new MyStack<>(),
-                new MyDictionary<>(),
-                new MyList<>(),
-                compound
-        );
+        PrgState state = PrgState.of(compound);
 
         // Simulate the controller popping the compound statement.
         state.getExeStack().pop();
@@ -57,20 +48,12 @@ class CompStmtTest {
                 dummyStmt("second")
         );
 
-        PrgState state = new PrgState(
-                new MyStack<>(),
-                new MyDictionary<>(),
-                new MyList<>(),
-                compound
-        );
+        PrgState state = PrgState.of(compound);
 
         state.getExeStack().pop();
 
         assertSame(state, compound.execute(state));
     }
-
-    //when a compound statement executes, the second statement is pushed first,
-    // then the first statement, so the first will execute next.
 
     @Test
     void toStringDisplaysBothStatements() {

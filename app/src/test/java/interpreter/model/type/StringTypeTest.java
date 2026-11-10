@@ -17,12 +17,7 @@ class StringTypeTest {
 
     @Test
     void stringVariableGetsEmptyDefaultValue() throws MyException {
-        PrgState state = new PrgState(
-                new MyStack<>(),
-                new MyDictionary<>(),
-                new MyList<>(),
-                new NopStmt()
-        );
+        PrgState state = PrgState.of(new NopStmt());
 
         new VarDeclStmt("name", new StringType()).execute(state);
 

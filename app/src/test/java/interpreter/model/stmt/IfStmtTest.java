@@ -20,12 +20,7 @@ class IfStmtTest {
     private PrgState createState() throws MyException {
         IStmt dummy = state -> state;
 
-        PrgState state = new PrgState(
-                new MyStack<>(),
-                new MyDictionary<>(),
-                new MyList<>(),
-                dummy
-        );
+        PrgState state = PrgState.of(dummy);
 
         // Simulate the controller removing the current statement.
         state.getExeStack().pop();

@@ -17,12 +17,14 @@ public class Main {
 
     private static Controller createController(IStmt program) {
 
-        PrgState state = new PrgState(
-                new MyStack<>(),
-                new MyDictionary<>(),
-                new MyList<>(),
-                program
-        );
+        PrgState state =  PrgState.of(program);
+        //modified from this
+       // PrgState state = new PrgState(
+         //       new MyStack<>(),
+           //     new MyDictionary<>(),
+             //   new MyList<>(),
+               // program
+        //      );
 
         Repository repo = new Repository(state);
 
