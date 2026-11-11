@@ -1,19 +1,7 @@
 package interpreter.view;
 
-public class ExitCommand implements  Command {
-    @Override
-    public String getKey() {
-        return "0";
-    }
+public class ExitCommand extends Command {
+    public ExitCommand(String key, String description) { super(key, description); }
 
-    @Override
-    public String getDescription() {
-        return "Exit";
-    }
-
-    @Override
-    public void execute() {
-        System.exit(0);
-    }
-
+    @Override public void execute() { System.exit(0); }
 }

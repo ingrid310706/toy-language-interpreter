@@ -1,13 +1,17 @@
-
 package interpreter.view;
 
-import interpreter.exceptions.MyException;
+public abstract class Command {
+    private final String key;
+    private final String description;
 
-public interface Command {
+    protected Command(String key, String description) {
+        this.key = key;
+        this.description = description;
+    }
 
-    String getKey();
+    public abstract void execute();
 
-    String getDescription();
+    public String getKey() { return key; }
 
-    void execute() throws MyException;
+    public String getDescription() { return description; }
 }
