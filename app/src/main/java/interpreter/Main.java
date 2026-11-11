@@ -26,7 +26,7 @@ public class Main {
                // program
         //      );
 
-        Repository repo = new Repository(state);
+        Repository repo = new Repository(state, "log.txt");
 
         return new Controller(repo, true);
     }
