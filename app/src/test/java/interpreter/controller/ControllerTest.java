@@ -19,6 +19,8 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.file.Files;
+
 class ControllerTest {
 
     private PrgState createState(IStmt program) {
@@ -158,5 +160,32 @@ class ControllerTest {
 
     private Repository repoFor(PrgState state) {
         return new Repository(state, dir.resolve("log.txt").toString());
+    }
+
+    @Test
+    void logFileContainsTheFourSectionsInOrder() throws Exception {
+        PrgState state = createState(new CompStmt(
+                new VarDeclStmt("v", new IntType()),
+                new PrintStmt(new ValueExp(new IntValue(1)))));
+
+        new Controller(repoFor(state), false).allStep();
+
+        String log = Files.readString(dir.resolve("log.txt"));
+        int a = log.indexOf("ExeStack:"), b = log.indexOf("SymTable:"),
+                c = log.indexOf("Out:"), d = log.indexOf("FileTable:");
+        assertTrue(0 <= a && a < b && b < c && c < d);
+    }
+
+    @Test
+    void theInitialStateAndEveryStepAreLogged() throws Exception {
+        // CompStmt, VarDeclStmt, PrintStmt = 3 steps + the initial state
+        PrgState state = createState(new CompStmt(
+                new VarDeclStmt("v", new IntType()),
+                new PrintStmt(new ValueExp(new IntValue(1)))));
+
+        new Controller(repoFor(state), false).allStep();
+
+        String log = Files.readString(dir.resolve("log.txt"));
+        assertEquals(4, log.split("ExeStack:", -1).length - 1);
     }
 }
