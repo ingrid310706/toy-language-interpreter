@@ -11,26 +11,27 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public record OpenRFileStmt(IExp expression) implements IStmt {
+public record OpenRFileStmt(IExp exp) implements IStmt {
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
 
-        IValue value = expression.eval(state.getSymTable());
+        IValue value = exp.eval(state.getSymTable());
 
         if (!(value instanceof StringValue stringValue)) {
             throw new StatementException(
-                    "The expression must evaluate to a string"
+                    "openRFile: " + exp + " is not a string"
             );
         }
 
         if (state.getFileTable().isDefined(stringValue)) {
             throw new StatementException(
-                    "File is already open"
+                    "openRFile: " + stringValue + " is already open"
             );
         }
 
         try {
+            // no try-with-resources: the file must stay open until closeRFile
             BufferedReader bufferedReader =
                     new BufferedReader(
                             new FileReader(stringValue.val())
@@ -40,7 +41,8 @@ public record OpenRFileStmt(IExp expression) implements IStmt {
 
         } catch (IOException e) {
             throw new StatementException(
-                    "Could not open file: " + stringValue.val()
+                    "openRFile: cannot open " + stringValue
+                            + ": " + e.getMessage()
             );
         }
 
@@ -49,6 +51,6 @@ public record OpenRFileStmt(IExp expression) implements IStmt {
 
     @Override
     public String toString() {
-        return "openRFile(" + expression + ")";
+        return "openRFile(" + exp + ")";
     }
 }
