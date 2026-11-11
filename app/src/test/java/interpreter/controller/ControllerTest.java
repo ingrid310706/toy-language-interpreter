@@ -14,6 +14,9 @@ import interpreter.model.value.*;
 import interpreter.repository.Repository;
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.io.TempDir;
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ControllerTest {
@@ -29,7 +32,7 @@ class ControllerTest {
         );
 
         Controller controller = new Controller(
-                new Repository(state), false
+                repoFor(state), false
         );
 
         controller.oneStep(state);
@@ -43,7 +46,7 @@ class ControllerTest {
     void oneStepOnEmptyStackThrows() throws MyException {
         PrgState state = createState(new NopStmt());
         Controller controller = new Controller(
-                new Repository(state), false
+                repoFor(state), false
         );
 
         controller.oneStep(state);
@@ -65,7 +68,7 @@ class ControllerTest {
 
         PrgState state = createState(ex1);
         Controller controller = new Controller(
-                new Repository(state), false
+                repoFor(state), false
         );
 
         controller.allStep();
@@ -106,7 +109,7 @@ class ControllerTest {
 
         PrgState state = createState(ex2);
         Controller controller = new Controller(
-                new Repository(state), false
+                repoFor(state), false
         );
 
         controller.allStep();
@@ -141,7 +144,7 @@ class ControllerTest {
 
         PrgState state = createState(ex3);
         Controller controller = new Controller(
-                new Repository(state), false
+                repoFor(state), false
         );
 
         controller.allStep();
@@ -149,5 +152,11 @@ class ControllerTest {
         assertEquals(1, state.getOut().size());
         assertEquals(new IntValue(2), state.getOut().get(0));
         assertTrue(state.getExeStack().isEmpty());
+    }
+    @TempDir
+    Path dir;
+
+    private Repository repoFor(PrgState state) {
+        return new Repository(state, dir.resolve("log.txt").toString());
     }
 }
