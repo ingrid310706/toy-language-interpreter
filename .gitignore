@@ -13,3 +13,6 @@ build
 out/
 .vscode/
 .DS_Store
+
+# log files of the interpreter (A3)
+log*.txt
