@@ -10,7 +10,7 @@ import interpreter.model.value.IValue;
 public record RelationalExp(RelOp op, IExp left , IExp right) implements IExp {
     @Override
     public IValue eval(IDictionary<String,IValue> symTable)
-        throws MyException{
+            throws MyException{
         if(!(left.eval(symTable) instanceof IntValue(int n1)))
             throw new ExpressionException("first operand is not an integer");
 
@@ -25,5 +25,10 @@ public record RelationalExp(RelOp op, IExp left , IExp right) implements IExp {
             case GT -> n1 > n2;
             case GE -> n1 >= n2;
         });
+    }
+
+    @Override
+    public String toString() {
+        return "(" + left + " " + op + " " + right + ")";
     }
 }
