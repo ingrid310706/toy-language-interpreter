@@ -12,6 +12,10 @@ import interpreter.model.value.IValue;
 import interpreter.model.value.StringValue;
 import org.junit.jupiter.api.Test;
 
+import interpreter.model.exp.ValueExp;
+import interpreter.model.stmt.PrintStmt;
+import interpreter.model.value.IntValue;
+
 import java.io.BufferedReader;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,5 +103,43 @@ class PrgStateTest {
         assertSame(program, state.getOriginalProgram());
         assertSame(program, state.getExeStack().pop());
         assertTrue(state.getExeStack().isEmpty());
+    }
+
+    //added 3 tests after modifying prg state
+
+    @Test
+    void logStringHasTheFourSectionsInOrder() {
+        String log = PrgState.of(dummyProgram()).toLogString();
+
+        int a = log.indexOf("ExeStack:"), b = log.indexOf("SymTable:"),
+                c = log.indexOf("Out:"), d = log.indexOf("FileTable:");
+
+        assertTrue(0 <= a && a < b && b < c && c < d);
+    }
+
+    @Test
+    void logStringPutsEachElementOnItsOwnLine() throws MyException {
+        PrgState state = PrgState.of(dummyProgram());
+        state.getSymTable().put("x", new IntValue(5));
+        state.getOut().add(new IntValue(10));
+        state.getFileTable().put(new StringValue("test.in"),
+                new BufferedReader(new java.io.StringReader("")));
+
+        assertEquals(
+                "ExeStack:\ndummy\n"
+                        + "SymTable:\nx --> 5\n"
+                        + "Out:\n10\n"
+                        + "FileTable:\ntest.in\n",
+                state.toLogString());
+    }
+
+    @Test
+    void logStringListsTheTopOfTheStackFirst() throws MyException {
+        PrgState state = PrgState.of(new PrintStmt(new ValueExp(new IntValue(1))));
+        state.getExeStack().push(new PrintStmt(new ValueExp(new IntValue(2))));
+
+        String log = state.toLogString();
+
+        assertTrue(log.indexOf("print(2)") < log.indexOf("print(1)"));
     }
 }
