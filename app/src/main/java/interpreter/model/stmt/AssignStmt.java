@@ -6,6 +6,8 @@ import interpreter.exceptions.StatementException;
 import interpreter.model.PrgState;
 import interpreter.model.value.IValue;
 import interpreter.model.exp.IExp;
+import interpreter.model.adt.MyHeap;
+
 
 public record AssignStmt(String id, IExp exp) implements IStmt {
 
@@ -16,7 +18,7 @@ public record AssignStmt(String id, IExp exp) implements IStmt {
         if (!symTable.isDefined(id))
             throw new StatementException("variable " + id + " was not declared");
 
-        IValue val = exp.eval(symTable);
+        IValue val = exp.eval(symTable, new MyHeap());
 
         if (!val.getType().equals(symTable.lookup(id).getType()))
             throw new StatementException(

@@ -8,6 +8,7 @@ import interpreter.model.type.IntType;
 import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
 import interpreter.model.value.StringValue;
+import interpreter.model.adt.MyHeap;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public record ReadFileStmt(IExp exp, String varName) implements IStmt { // S9
             );
         }
 
-        IValue value = exp.eval(symTable);
+        IValue value = exp.eval(symTable, new MyHeap());
 
         if (!(value instanceof StringValue fileName)) {
             throw new StatementException(

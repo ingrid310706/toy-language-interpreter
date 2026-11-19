@@ -7,6 +7,7 @@ import interpreter.model.adt.MyDictionary;
 import interpreter.model.value.BoolValue;
 import interpreter.model.value.IntValue;
 import org.junit.jupiter.api.Test;
+import interpreter.model.adt.MyHeap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +22,7 @@ class RelationalExpTest {
                 new ValueExp(new IntValue(b))
         );
 
-        return (BoolValue) exp.eval(new MyDictionary<>());
+        return (BoolValue) exp.eval(new MyDictionary<>(), new MyHeap());
     }
 
     @Test
@@ -105,7 +106,7 @@ class RelationalExpTest {
         );
 
         assertThrows(ExpressionException.class,
-                () -> exp.eval(new MyDictionary<>()));
+                () -> exp.eval(new MyDictionary<>(), new MyHeap()));
     }
 
     @Test
@@ -117,6 +118,6 @@ class RelationalExpTest {
         );
 
         assertThrows(ExpressionException.class,
-                () -> exp.eval(new MyDictionary<>()));
+                () -> exp.eval(new MyDictionary<>(), new MyHeap()));
     }
 }

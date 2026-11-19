@@ -16,7 +16,7 @@ public record OpenRFileStmt(IExp exp) implements IStmt {
     @Override
     public PrgState execute(PrgState state) throws MyException {
 
-        IValue value = exp.eval(state.getSymTable());
+        IValue value = exp.eval(state.getSymTable(),state.getHeap());
 
         if (!(value instanceof StringValue stringValue)) {
             throw new StatementException(

@@ -9,6 +9,8 @@ import interpreter.model.value.BoolValue;
 import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
 import org.junit.jupiter.api.Test;
+import interpreter.model.adt.MyHeap;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,28 +27,28 @@ class LogicExpTest {
     void andReturnsTrueWhenBothOperandsAreTrue() throws MyException {
         IExp exp = new LogicExp(LogicOp.AND, bool(true), bool(true));
 
-        assertEquals(new BoolValue(true), exp.eval(symTable));
+        assertEquals(new BoolValue(true), exp.eval(symTable, new MyHeap()));
     }
 
     @Test
     void andReturnsFalseWhenOneOperandIsFalse() throws MyException {
         IExp exp = new LogicExp(LogicOp.AND, bool(true), bool(false));
 
-        assertEquals(new BoolValue(false), exp.eval(symTable));
+        assertEquals(new BoolValue(false), exp.eval(symTable, new MyHeap()));
     }
 
     @Test
     void orReturnsTrueWhenOneOperandIsTrue() throws MyException {
         IExp exp = new LogicExp(LogicOp.OR, bool(false), bool(true));
 
-        assertEquals(new BoolValue(true), exp.eval(symTable));
+        assertEquals(new BoolValue(true), exp.eval(symTable, new MyHeap()));
     }
 
     @Test
     void orReturnsFalseWhenBothOperandsAreFalse() throws MyException {
         IExp exp = new LogicExp(LogicOp.OR, bool(false), bool(false));
 
-        assertEquals(new BoolValue(false), exp.eval(symTable));
+        assertEquals(new BoolValue(false), exp.eval(symTable, new MyHeap()));
     }
 
     @Test
@@ -59,7 +61,7 @@ class LogicExpTest {
 
         ExpressionException exception = assertThrows(
                 ExpressionException.class,
-                () -> exp.eval(symTable)
+                () -> exp.eval(symTable, new MyHeap())
         );
 
         assertEquals("first operand is not a boolean", exception.getMessage());
@@ -75,7 +77,7 @@ class LogicExpTest {
 
         ExpressionException exception = assertThrows(
                 ExpressionException.class,
-                () -> exp.eval(symTable)
+                () -> exp.eval(symTable, new MyHeap())
         );
 
         assertEquals("second operand is not a boolean", exception.getMessage());

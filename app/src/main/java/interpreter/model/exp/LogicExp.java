@@ -6,18 +6,19 @@ import interpreter.exceptions.MyException;
 import interpreter.model.adt.IDictionary;
 import interpreter.model.value.BoolValue;
 import interpreter.model.value.IValue;
+import interpreter.model.adt.IHeap;
 
 public record LogicExp(LogicOp op, IExp left, IExp right) implements IExp {
 //takes an operator and two expressions.
     //ex : true and false
     @Override
-    public IValue eval(IDictionary<String, IValue> symTable)
+    public IValue eval(IDictionary<String, IValue> symTable,IHeap heap)
             throws MyException {
 
-        if (!(left.eval(symTable) instanceof BoolValue(boolean b1)))
+        if (!(left.eval(symTable,heap) instanceof BoolValue(boolean b1)))
             throw new ExpressionException("first operand is not a boolean");
 
-        if (!(right.eval(symTable) instanceof BoolValue(boolean b2)))
+        if (!(right.eval(symTable,heap) instanceof BoolValue(boolean b2)))
             throw new ExpressionException("second operand is not a boolean");
 
         return switch (op) {

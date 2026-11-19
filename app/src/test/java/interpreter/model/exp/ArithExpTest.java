@@ -9,6 +9,8 @@ import interpreter.model.value.BoolValue;
 import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
 import org.junit.jupiter.api.Test;
+import interpreter.model.adt.MyHeap;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +32,7 @@ class ArithExpTest {
                 new ArithExp(ArithOp.MUL, num(3), num(5))
         );
 
-        assertEquals(new IntValue(17), e.eval(symTable));
+        assertEquals(new IntValue(17), e.eval(symTable, new MyHeap()));
     }
 
     // Professor's example: division by zero
@@ -40,7 +42,7 @@ class ArithExpTest {
 
         var ex = assertThrows(
                 ExpressionException.class,
-                () -> e.eval(symTable)
+                () -> e.eval(symTable, new MyHeap())
         );
 
         assertEquals("division by zero", ex.getMessage());
@@ -50,27 +52,27 @@ class ArithExpTest {
     void additionWorks() throws MyException {
         IExp e = new ArithExp(ArithOp.ADD, num(5), num(3));
 
-        assertEquals(new IntValue(8), e.eval(symTable));
+        assertEquals(new IntValue(8), e.eval(symTable, new MyHeap()));
     }
 
     @Test
     void subtractionWorks() throws MyException {
         IExp e = new ArithExp(ArithOp.SUB, num(10), num(4));
 
-        assertEquals(new IntValue(6), e.eval(symTable));
+        assertEquals(new IntValue(6), e.eval(symTable, new MyHeap()));
     }
 
     @Test
     void multiplicationWorks() throws MyException {
         IExp e = new ArithExp(ArithOp.MUL, num(3), num(4));
 
-        assertEquals(new IntValue(12), e.eval(symTable));
+        assertEquals(new IntValue(12), e.eval(symTable, new MyHeap()));
     }
 
     @Test
     void divisionWorks() throws MyException {
         IExp e = new ArithExp(ArithOp.DIV, num(10), num(2));
 
-        assertEquals(new IntValue(5), e.eval(symTable));
+        assertEquals(new IntValue(5), e.eval(symTable, new MyHeap()));
     }
 }

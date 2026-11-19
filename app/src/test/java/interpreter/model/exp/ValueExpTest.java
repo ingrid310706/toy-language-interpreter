@@ -7,6 +7,8 @@ import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
 import interpreter.model.value.BoolValue;
 import org.junit.jupiter.api.Test;
+import interpreter.model.adt.IHeap;
+import interpreter.model.adt.MyHeap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +20,7 @@ class ValueExpTest {
 
         IExp exp = new ValueExp(new IntValue(5));
 
-        assertEquals(new IntValue(5), exp.eval(symTable));
+        assertEquals(new IntValue(5), exp.eval(symTable, new MyHeap()));
     }
 
     @Test
@@ -27,7 +29,7 @@ class ValueExpTest {
 
         IExp exp = new ValueExp(new BoolValue(true));
 
-        assertEquals(new BoolValue(true), exp.eval(symTable));
+        assertEquals(new BoolValue(true), exp.eval(symTable, new MyHeap()));
     }
 
     @Test
@@ -36,7 +38,7 @@ class ValueExpTest {
         symTable.put("x", new IntValue(10));
 
         IExp exp = new ValueExp(new IntValue(5));
-        exp.eval(symTable);
+        exp.eval(symTable, new MyHeap());
 
         assertEquals(new IntValue(10), symTable.lookup("x"));
     }

@@ -9,6 +9,8 @@ import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
 import interpreter.model.value.BoolValue;
 import org.junit.jupiter.api.Test;
+import interpreter.model.adt.MyHeap;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +23,7 @@ class VarExpTest {
 
         IExp exp = new VarExp("x");
 
-        assertEquals(new IntValue(10), exp.eval(symTable));
+        assertEquals(new IntValue(10), exp.eval(symTable, new MyHeap()));
     }
 
     @Test
@@ -31,7 +33,7 @@ class VarExpTest {
 
         IExp exp = new VarExp("a");
 
-        assertEquals(new BoolValue(true), exp.eval(symTable));
+        assertEquals(new BoolValue(true), exp.eval(symTable, new MyHeap()));
     }
 
     @Test
@@ -42,7 +44,7 @@ class VarExpTest {
 
         ExpressionException ex = assertThrows(
                 ExpressionException.class,
-                () -> exp.eval(symTable)
+                () -> exp.eval(symTable, new MyHeap())
         );
 
         assertEquals("variable x is not defined", ex.getMessage());
@@ -54,7 +56,7 @@ class VarExpTest {
         symTable.put("x", new IntValue(10));
 
         IExp exp = new VarExp("x");
-        exp.eval(symTable);
+        exp.eval(symTable, new MyHeap());
 
         assertEquals(new IntValue(10), symTable.lookup("x"));
     }
