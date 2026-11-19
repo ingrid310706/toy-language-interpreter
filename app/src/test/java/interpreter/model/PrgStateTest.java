@@ -4,7 +4,9 @@ import interpreter.exceptions.MyException;
 import interpreter.model.adt.IDictionary;
 import interpreter.model.adt.IList;
 import interpreter.model.adt.IStack;
+import interpreter.model.adt.IHeap;
 import interpreter.model.adt.MyDictionary;
+import interpreter.model.adt.MyHeap;
 import interpreter.model.adt.MyList;
 import interpreter.model.adt.MyStack;
 import interpreter.model.stmt.IStmt;
@@ -46,6 +48,7 @@ class PrgStateTest {
                 new MyDictionary<>(),
                 new MyList<>(),
                 new MyDictionary<>(),
+                new MyHeap(),
                 program
         );
 
@@ -61,12 +64,14 @@ class PrgStateTest {
         IList<IValue> out = new MyList<>();
         IDictionary<StringValue, BufferedReader> fileTable =
                 new MyDictionary<>();
+        IHeap heap = new MyHeap();
 
         PrgState state = new PrgState(
                 stack,
                 symTable,
                 out,
                 fileTable,
+                heap,
                 dummyProgram()
         );
 
@@ -74,6 +79,7 @@ class PrgStateTest {
         assertSame(symTable, state.getSymTable());
         assertSame(out, state.getOut());
         assertSame(fileTable, state.getFileTable());
+        assertSame(heap, state.getHeap());
     }
 
     @Test
@@ -83,6 +89,7 @@ class PrgStateTest {
                 new MyDictionary<>(),
                 new MyList<>(),
                 new MyDictionary<>(),
+                new MyHeap(),
                 dummyProgram()
         );
 
@@ -92,6 +99,7 @@ class PrgStateTest {
         assertTrue(text.contains("SymTable:"));
         assertTrue(text.contains("Out:"));
         assertTrue(text.contains("FileTable:"));
+        assertTrue(text.contains("Heap:"));
     }
 
     @Test
@@ -105,16 +113,15 @@ class PrgStateTest {
         assertTrue(state.getExeStack().isEmpty());
     }
 
-    //added 3 tests after modifying prg state
-
     @Test
-    void logStringHasTheFourSectionsInOrder() {
+    void logStringHasTheFiveSectionsInOrder() {
         String log = PrgState.of(dummyProgram()).toLogString();
 
         int a = log.indexOf("ExeStack:"), b = log.indexOf("SymTable:"),
-                c = log.indexOf("Out:"), d = log.indexOf("FileTable:");
+                c = log.indexOf("Out:"), d = log.indexOf("FileTable:"),
+                e = log.indexOf("Heap:");
 
-        assertTrue(0 <= a && a < b && b < c && c < d);
+        assertTrue(0 <= a && a < b && b < c && c < d && d < e);
     }
 
     @Test
@@ -129,7 +136,8 @@ class PrgStateTest {
                 "ExeStack:\ndummy\n"
                         + "SymTable:\nx --> 5\n"
                         + "Out:\n10\n"
-                        + "FileTable:\ntest.in\n",
+                        + "FileTable:\ntest.in\n"
+                        + "Heap:\n",
                 state.toLogString());
     }
 
@@ -141,5 +149,32 @@ class PrgStateTest {
         String log = state.toLogString();
 
         assertTrue(log.indexOf("print(2)") < log.indexOf("print(1)"));
+    }
+
+    @Test
+    void logStringListsTheHeapSortedByAddress() throws MyException {
+        PrgState state = PrgState.of(dummyProgram());
+        state.getHeap().allocate(new IntValue(20));
+        state.getHeap().allocate(new IntValue(30));
+        state.getHeap().allocate(new IntValue(40));
+
+        String log = state.toLogString();
+
+        assertTrue(log.endsWith("Heap:\n1 --> 20\n2 --> 30\n3 --> 40\n"));
+    }
+
+    @Test
+    void ofCreatesAnEmptyHeap() {
+        assertTrue(PrgState.of(dummyProgram()).getHeap().getContent().isEmpty());
+    }
+
+    @Test
+    void setHeapReplacesTheHeap() {
+        PrgState state = PrgState.of(dummyProgram());
+        IHeap newHeap = new MyHeap();
+
+        state.setHeap(newHeap);
+
+        assertSame(newHeap, state.getHeap());
     }
 }
