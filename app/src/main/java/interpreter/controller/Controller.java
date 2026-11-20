@@ -33,7 +33,16 @@ public class Controller {
             oneStep(prg);
             repo.logPrgStateExec();
             display(prg);
+            collectGarbage(prg);
+            repo.logPrgStateExec();
+            display(prg);
         }
+    }
+
+    private void collectGarbage(PrgState state) {
+        var heap = state.getHeap();
+        heap.setContent(GarbageCollector.safeGarbageCollector(
+                state.getSymTable().toMap().values(), heap.getContent()));
     }
 
     private void display(PrgState state) {

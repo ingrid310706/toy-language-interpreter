@@ -186,6 +186,39 @@ class ControllerTest {
         new Controller(repoFor(state), false).allStep();
 
         String log = Files.readString(dir.resolve("log.txt"));
-        assertEquals(4, log.split("ExeStack:", -1).length - 1);
+        // the initial state + (3 steps, each logged before and after the garbage collector
+        assertEquals(7, log.split("ExeStack:", -1).length - 1);
+    }
+
+    //added 2 more test since implementation of garbage collector
+    @Test
+    void allStepRemovesTheUnreachableHeapLocations() throws Exception {
+        // Ref int v; new(v, 20); new(v, 30)  -> address 1 is no longer referenced
+        PrgState state = createState(new CompStmt(
+                new VarDeclStmt("v", new RefType(new IntType())),
+                new CompStmt(
+                        new NewStmt("v", new ValueExp(new IntValue(20))),
+                        new NewStmt("v", new ValueExp(new IntValue(30))))));
+
+        new Controller(repoFor(state), false).allStep();
+
+        assertEquals(java.util.Set.of(2), state.getHeap().getContent().keySet());
+        assertEquals(new IntValue(30), state.getHeap().get(2));
+    }
+
+    @Test
+    void allStepKeepsTheLocationsReachableThroughTheHeap() throws Exception {
+        // Ref int v; new(v, 20); Ref Ref int a; new(a, v); new(v, 30)
+        PrgState state = createState(new CompStmt(
+                new VarDeclStmt("v", new RefType(new IntType())),
+                new CompStmt(new NewStmt("v", new ValueExp(new IntValue(20))),
+                        new CompStmt(
+                                new VarDeclStmt("a", new RefType(new RefType(new IntType()))),
+                                new CompStmt(new NewStmt("a", new VarExp("v")),
+                                        new NewStmt("v", new ValueExp(new IntValue(30))))))));
+
+        new Controller(repoFor(state), false).allStep();
+
+        assertEquals(java.util.Set.of(1, 2, 3), state.getHeap().getContent().keySet());
     }
 }
